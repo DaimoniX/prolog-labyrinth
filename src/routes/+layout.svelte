@@ -6,6 +6,6 @@
     <title>Wampus Labyrinth</title>
 </svelte:head>
 
-<div class="h-full w-full flex items-center justify-center">
+<main class="h-full w-full flex flex-col items-center justify-center">
     <slot />
-</div>
+</main>
