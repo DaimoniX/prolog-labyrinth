@@ -1,4 +1,4 @@
-import { PerceptionEnum } from './game';
+import { PerceptionEnum } from '../game';
 
 export type AiTileData = {
 	w: number;

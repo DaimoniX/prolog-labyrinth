@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { AiTileData } from '$lib/ai';
+	import type { AiTileData } from '$lib/ai/ai';
 
 	export let knowledge: AiTileData[][];
 </script>
