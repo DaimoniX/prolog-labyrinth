@@ -108,12 +108,20 @@ export class Game {
 		return this._moves;
 	}
 
+    public get width() {
+        return this._tiles[0].length;
+    }
+
+    public get height() {
+        return this._tiles.length;
+    }
+
 	private isValidMove(pos: V2) {
 		return (
 			pos.x >= 0 &&
-			pos.x < this._tiles[0].length &&
+			pos.x < this.width &&
 			pos.y >= 0 &&
-			pos.y < this._tiles.length &&
+			pos.y < this.height &&
 			isAdjacentV2(this._playerPosition, pos)
 		);
 	}

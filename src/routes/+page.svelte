@@ -1,23 +1,35 @@
 <script lang="ts">
+	import { JSAgent } from '$lib/ai/js/jsAgent';
+	import Knowledge from '$lib/components/Knowledge.svelte';
 	import Tile from '$lib/components/Tile.svelte';
 	import { Game } from '$lib/game';
 	import { type V2, isAdjacentV2, equalsV2 } from '$lib/v2';
 
-	let width = 3;
-	let height = 3;
+	let width = 5;
+	let height = 5;
 	let cheat = false;
 	let displayKnowledge = true;
 	let game = new Game(width, height);
+	let aiAgent = new JSAgent(game);
+	let nextAiTarget = aiAgent.nextTarget();
+	let nextAiMove = aiAgent.nextMove();
 
 	$: create(width, height);
 
 	function movePlayer(pos: V2) {
 		if (!game.movePlayer(pos)) return;
 		game = game;
+		aiAgent.addVisited(pos);
+		nextAiTarget = aiAgent.nextTarget();
+		nextAiMove = aiAgent.nextMove();
+		aiAgent = aiAgent;
 	}
 
 	function create(width: number, height: number) {
 		game = new Game(width, height);
+		aiAgent = new JSAgent(game);
+		nextAiTarget = aiAgent.nextTarget();
+		nextAiMove = aiAgent.nextMove();
 	}
 
 	function reset() {
@@ -27,13 +39,15 @@
 
 <div class="flex gap-4">
 	<div class="relative bg-gray-50 select-none">
-		<table class="w-full h-full">
+		<table>
 			{#each game.field as row, y}
 				<tr>
 					{#each row as cell, x}
 						<td
 							class="cell border border-black"
-							class:!bg-blue-200={isAdjacentV2(game.playerPosition, { x, y })}
+							class:bg-blue-200={isAdjacentV2(game.playerPosition, { x, y })}
+							class:!bg-blue-700={equalsV2(nextAiTarget, { x, y })}
+							class:!bg-blue-500={equalsV2(nextAiMove, { x, y })}
 							on:click={() => isAdjacentV2(game.playerPosition, { x, y }) && movePlayer({ x, y })}
 						>
 							{#if equalsV2(game.playerPosition, { x, y }) || cheat || game.gameOver}
@@ -48,6 +62,9 @@
 				</tr>
 			{/each}
 		</table>
+		{#if displayKnowledge}
+			<Knowledge knowledge={aiAgent.knowledge} visited={aiAgent.visited} />
+		{/if}
 		{#if game.gameOver}
 			<div
 				class="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center"

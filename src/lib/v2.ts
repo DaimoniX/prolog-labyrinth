@@ -20,3 +20,8 @@ export function getAdjacentV2(pos: V2) : V2[] {
 export function getAdjacentV2Bound(pos: V2, width: number, height: number) : V2[] {
     return getAdjacentV2(pos).filter(p => p.x >= 0 && p.x < width && p.y >= 0 && p.y < height);
 }
+
+export function v2FromString(str: string): V2 {
+    const [x, y] = str.split(',').map(Number);
+    return { x, y };
+}
