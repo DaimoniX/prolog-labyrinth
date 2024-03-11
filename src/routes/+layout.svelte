@@ -3,9 +3,9 @@
 </script>
 
 <svelte:head>
-    <title>Wumpus Labyrinth</title>
+	<title>Wumpus Labyrinth</title>
 </svelte:head>
 
 <main class="h-full w-full flex flex-col items-center justify-center">
-    <slot />
+	<slot />
 </main>

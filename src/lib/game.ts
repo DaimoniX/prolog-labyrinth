@@ -108,13 +108,13 @@ export class Game {
 		return this._moves;
 	}
 
-    public get width() {
-        return this._tiles[0].length;
-    }
+	public get width() {
+		return this._tiles[0].length;
+	}
 
-    public get height() {
-        return this._tiles.length;
-    }
+	public get height() {
+		return this._tiles.length;
+	}
 
 	private isValidMove(pos: V2) {
 		return (

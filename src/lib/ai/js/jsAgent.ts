@@ -14,15 +14,10 @@ export class JSAgent extends AIAgent {
 		);
 	}
 
-	public override addVisited(v: V2): void {
-		if (this.visited.includes(`${v.x},${v.y}`)) return;
-		super.addVisited(v);
-
+	private updateKnowledge(v: V2): void {
 		const perceptions = this.game.perceptions;
 		const tileData = perceptionsToTileData(perceptions);
 		const adjacents = this.getAdjacentNotVisited(v);
-
-		this.knowledge[v.y][v.x] = { wumpus: 0, pit: 0, gold: 0, empty: true };
 
 		if (perceptions.length === 0)
 			adjacents.forEach(
@@ -55,6 +50,21 @@ export class JSAgent extends AIAgent {
 			);
 	}
 
+	public override addVisited(v: V2): void {
+		if (this.visited.includes(`${v.x},${v.y}`)) return;
+		super.addVisited(v);
+		this.knowledge[v.y][v.x] = { wumpus: 0, pit: 0, gold: 0, empty: true };
+
+		this.updateKnowledge(v);
+	}
+
+	private calculateDanger(v: V2): number {
+		const { wumpus, pit, gold } = this.knowledge[v.y][v.x];
+		const goldMultiplier = gold > 0.5 ? gold * 2 : gold / 2;
+		const safeZone = v.x <= 1 && v.y <= 1 ? 0.5 : 0;
+		return wumpus + pit - goldMultiplier - safeZone;
+	}
+
 	public override nextTarget(): V2 {
 		if (this.game.playerHasGold) return this.game.playerPosition;
 
@@ -63,17 +73,13 @@ export class JSAgent extends AIAgent {
 
 		for (let y = 0; y < this.game.height; y++) {
 			for (let x = 0; x < this.game.width; x++) {
-				const { wumpus, pit, gold } = this.knowledge[y][x];
 				if (this.visited.includes(`${x},${y}`)) continue;
 				if (!this.visited.some((v) => isAdjacentV2({ x, y }, v2FromString(v)))) continue;
 
-				const danger = wumpus + pit;
-				const goldMultiplier = gold > 0.5 ? gold * 2 : gold / 2;
-                const safeZone = (x <= 1 && y <= 1) ? 0.5 : 0;
-                const multiplier = goldMultiplier + safeZone;
+				const danger = this.calculateDanger({ x, y });
 
-				if (danger - multiplier < leastDanger) {
-					leastDanger = danger - multiplier;
+				if (danger < leastDanger) {
+					leastDanger = danger;
 					best = { x, y };
 				}
 			}
@@ -84,7 +90,15 @@ export class JSAgent extends AIAgent {
 
 	public nextMove(): V2 {
 		const nextTarget = this.nextTarget();
-		return aStar(this.game.playerPosition, nextTarget, [...this.visited, `${nextTarget.x},${nextTarget.y}`], this.game.width, this.game.height)[1] ?? this.game.playerPosition;
+		return (
+			aStar(
+				this.game.playerPosition,
+				nextTarget,
+				[...this.visited, `${nextTarget.x},${nextTarget.y}`],
+				this.game.width,
+				this.game.height
+			)[1] ?? this.game.playerPosition
+		);
 	}
 }
 
