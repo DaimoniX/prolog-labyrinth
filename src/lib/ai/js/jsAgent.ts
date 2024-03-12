@@ -88,7 +88,7 @@ export class JSAgent extends AIAgent {
 		return best;
 	}
 
-	public nextMove(): V2 {
+	public override nextMove(): V2 {
 		const nextTarget = this.nextTarget();
 		return (
 			aStar(

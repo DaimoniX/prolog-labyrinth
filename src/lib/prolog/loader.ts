@@ -6,9 +6,9 @@ export async function loadProlog() {
 		arguments: ['-q']
 	});
 
-	const prologFile = await fetch('prolog/wumpus.pl');
+	const wumpusPrologFile = await fetch('prolog/wumpus.pl');
 
-	swipl.FS.writeFile('wumpus.pl', await prologFile.text());
+	swipl.FS.writeFile('wumpus.pl', await wumpusPrologFile.text());
 
 	const prolog = swipl.prolog;
 

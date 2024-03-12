@@ -20,7 +20,7 @@
 
 	function create(width: number, height: number) {
 		game = new Game(width, height);
-		aiAgent = new JSAgent(game);
+		aiAgent = createAgentByName(selectedAgent);
 		nextAiTarget = aiAgent.nextTarget();
 		nextAiMove = aiAgent.nextMove();
 	}
@@ -39,7 +39,7 @@
 	}
 
 	// UI state
-	let cheat = false;
+	let cheat = true;
 	let aiEnabled = true;
 	let displayKnowledge = true;
 	let autoplay = false;
@@ -50,10 +50,14 @@
 	let nextAiTarget = aiAgent.nextTarget();
 	let nextAiMove = aiAgent.nextMove();
 
-	function selectAgent(agent: string) {
-		if (agent === 'js') aiAgent = new JSAgent(game);
-		else if (agent === 'prolog') aiAgent = new PrologAgent(game, prolog);
+	function createAgentByName(agent: string) {
+		if (agent === 'js') return new JSAgent(game);
+		else if (agent === 'prolog') return new PrologAgent(game, prolog);
+		throw new Error(`Unknown agent: ${agent}`);
+	}
 
+	function selectAgent(agent: string) {
+		aiAgent = createAgentByName(agent);
 		reset();
 	}
 
@@ -98,6 +102,7 @@
 						<td
 							class="cell border border-black"
 							class:bg-blue-200={isAdjacentV2(game.playerPosition, { x, y })}
+							class:!cursor-pointer={!autoplay && isAdjacentV2(game.playerPosition, { x, y })}
 							class:!bg-blue-700={aiEnabled && equalsV2(nextAiTarget, { x, y })}
 							class:!bg-blue-500={aiEnabled && equalsV2(nextAiMove, { x, y })}
 							on:click={() =>
@@ -160,7 +165,7 @@
 					class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
 				>
 					<option value="js" selected>JS</option>
-					<option value="prolog" disabled>Prolog</option>
+					<option value="prolog">Prolog</option>
 				</select>
 			</label>
 			<label>
