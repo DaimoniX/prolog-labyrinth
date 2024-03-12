@@ -52,6 +52,7 @@ export class JSAgent extends AIAgent {
 
 	public override addVisited(v: V2): void {
 		if (this.visited.includes(`${v.x},${v.y}`)) return;
+
 		super.addVisited(v);
 		this.knowledge[v.y][v.x] = { wumpus: 0, pit: 0, gold: 0, empty: true };
 

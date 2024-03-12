@@ -19,6 +19,8 @@ export class PrologAgent extends AIAgent {
 	}
 
 	public override addVisited(v: V2): void {
+		if (this.visited.includes(`${v.x},${v.y}`)) return;
+
 		super.addVisited(v);
 
 		const perceptions = this.game.perceptions;

@@ -34,8 +34,8 @@ Result = [0, 1, 7, 3].
 % get_2d_val(++Matrix, ++Point, -Result)
 % Get the value of a 2D matrix at a given position
 get_2d_val(Matrix, [X, Y], Result) :-
-    nth0(X, Matrix, Row),
-    nth0(Y, Row, Result).
+    nth0(Y, Matrix, Row),
+    nth0(X, Row, Result).
 /*
 Example:
 ?- get_2d_val([[[0, 0], [1, 0]], [[0, 1], [1, 1]]], [1, 1], Result).

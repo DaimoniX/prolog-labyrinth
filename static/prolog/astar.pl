@@ -22,7 +22,6 @@ H = 2.
 % Move only on visited tiles
 % Create minimum possible amount of additional predicates
 astar(Start, Target, AllowedPoints, Path) :-
-    member(Start, AllowedPoints),
     astar_helper(Start, Target, [Target | AllowedPoints], [Start], Path), !.
 /*
 Example:
@@ -56,4 +55,3 @@ astar_step(Start, Target, AllowedPoints, CurrentPath, NextPoint) :-
     not(member(NextPoint, CurrentPath)),
     heuristic(NextPoint, Target, Heuristic),
     not((member(OtherAdjacent, AdjacentList), member(OtherAdjacent, AllowedPoints), not(member(OtherAdjacent, CurrentPath)), heuristic(OtherAdjacent, Target, OtherHeuristic), Heuristic > OtherHeuristic)).
-
