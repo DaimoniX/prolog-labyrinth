@@ -1,7 +1,7 @@
 import type { Game } from '$lib/game';
 import type { Prolog } from '$lib/prolog/prolog';
-import { v2FromString, type V2, getAdjacentV2Bound } from '$lib/v2';
-import { perceptionsToTileData, type AiTileData } from '../ai';
+import { v2FromString, type V2 } from '$lib/v2';
+import { type AiTileData } from '../ai';
 import { AIAgent } from '../aiAgent';
 
 export class PrologAgent extends AIAgent {
@@ -10,37 +10,6 @@ export class PrologAgent extends AIAgent {
 	public constructor(game: Game, prolog: Prolog) {
 		super(game);
 		this.prolog = prolog;
-	}
-
-	private getAdjacentNotVisited(v: V2): V2[] {
-		return getAdjacentV2Bound(v, this.game.width, this.game.height).filter(
-			(adj) => !this.visited.includes(`${adj.x},${adj.y}`)
-		);
-	}
-
-	public override addVisited(v: V2): void {
-		if (this.visited.includes(`${v.x},${v.y}`)) return;
-
-		super.addVisited(v);
-
-		const perceptions = this.game.perceptions;
-		const tileData = perceptionsToTileData(perceptions);
-		const adjacents = this.getAdjacentNotVisited(v);
-
-		this.knowledge[v.y][v.x] = {
-			wumpus: 0,
-			pit: 0,
-			gold: 0
-		};
-
-		adjacents.forEach(
-			(adj) =>
-				(this.knowledge[adj.y][adj.x] = {
-					wumpus: this.knowledge[adj.y][adj.x].wumpus + tileData.wumpus,
-					pit: this.knowledge[adj.y][adj.x].pit + tileData.pit,
-					gold: this.knowledge[adj.y][adj.x].gold + tileData.gold
-				})
-		);
 	}
 
 	public override nextTarget(): V2 {
