@@ -3,5 +3,17 @@
 @tailwind utilities;
 
 .cell {
-	@apply w-24 h-24;
+	@apply w-[100px] h-[100px];
+}
+
+input[type='checkbox'] {
+	@apply h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 accent-blue-500;
+}
+
+input[type='number'] {
+	@apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5;
+}
+
+select {
+	@apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5;
 }

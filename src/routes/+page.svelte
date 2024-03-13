@@ -9,6 +9,11 @@
 	import { loadProlog } from '$lib/prolog/loader';
 	import { type V2, isAdjacentV2, equalsV2 } from '$lib/v2';
 	import { onMount } from 'svelte';
+	import Tutorial from '$lib/components/Tutorial.svelte';
+
+	function clamp(value: number, min: number, max: number) {
+		return Math.min(Math.max(value, min), max);
+	}
 
 	// Game setup
 	let width = 5;
@@ -16,7 +21,7 @@
 	let game = new Game(width, height);
 	let aiAgent: AIAgent = new JSAgent(game);
 
-	$: create(width, height);
+	$: (width = clamp(width, 3, 15)) && (height = clamp(height, 3, 15)) && create(width, height);
 
 	function create(width: number, height: number) {
 		game = new Game(width, height);
@@ -39,9 +44,9 @@
 	}
 
 	// UI state
-	let cheat = true;
+	let cheat = false;
 	let aiEnabled = true;
-	let displayKnowledge = true;
+	let displayKnowledge = false;
 	let autoplay = false;
 	let selectedAgent = 'js';
 
@@ -91,6 +96,9 @@
 	onMount(async () => {
 		prolog = await loadProlog();
 	});
+
+	// Show Tutorial
+	let showTutorial = false;
 </script>
 
 <div class="flex gap-4">
@@ -139,14 +147,14 @@
 	</div>
 
 	<div class="flex flex-col gap-2 controls">
-		<h2 class="text-lg font-semibold">Controls</h2>
+		<h2 class="text-xl font-semibold px-1">Controls</h2>
 		<label>
 			Width:
-			<input bind:value={width} type="number" min="1" max="20" placeholder="Width" />
+			<input bind:value={width} type="number" min="1" max="20" placeholder="width" required />
 		</label>
 		<label>
 			Height:
-			<input bind:value={height} type="number" min="1" max="20" placeholder="Height" />
+			<input bind:value={height} type="number" min="1" max="20" placeholder="height" required />
 		</label>
 		<label>
 			Cheat:
@@ -160,10 +168,7 @@
 		{#if aiEnabled}
 			<label>
 				Agent:
-				<select
-					bind:value={selectedAgent}
-					class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-				>
+				<select bind:value={selectedAgent}>
 					<option value="js" selected>JS</option>
 					<option value="prolog">Prolog</option>
 				</select>
@@ -181,12 +186,19 @@
 		<div class="flex-1"></div>
 		<button
 			class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none"
+			on:click={() => (showTutorial = !showTutorial)}
+		>
+			Show Tutorial
+		</button>
+		<button
+			class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none"
 			on:click={reset}
 		>
 			New Game
 		</button>
 	</div>
 </div>
+<Tutorial bind:show={showTutorial} />
 
 <style lang="postcss">
 	.controls > label {
