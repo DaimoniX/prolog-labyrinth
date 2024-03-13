@@ -7,9 +7,9 @@ export class Prolog {
 		this.prolog = prolog;
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	public queryOnce(query: string, bindings?: Record<string, unknown>): any {
-		return this.query(query, bindings).once();
+	public queryOnce(query: string, bindings?: Record<string, unknown>) {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		return this.query(query, bindings).once() as Record<string, any> & { success: boolean };
 	}
 
 	public query(query: string, bindings?: Record<string, unknown>): SWIPL.Query {

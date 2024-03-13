@@ -4,7 +4,7 @@
 
 {#if show}
 	<button
-		class="absolute top-0 left-0 right-0 bottom-0 bg-gray-500/40 flex justify-center items-center cursor-default"
+		class="absolute top-0 left-0 right-0 bottom-0 bg-gray-500/40 flex justify-center items-center cursor-default w-full h-full"
 		on:click={() => (show = false)}
 	>
 		<button

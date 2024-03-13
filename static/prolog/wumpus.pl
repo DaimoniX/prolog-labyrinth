@@ -28,8 +28,8 @@ AdjacentList = [[2, 1], [0, 1], [1, 2], [1, 0]].
 
 
 
-% is_adjacent(+Point1, +Point2)
-% function that checks if two points are adjacent
+% is_adjacent(+Point1, ?Point2)
+% function that checks if two points are adjacent (or returns all adjacent points to a given point)
 is_adjacent(Point1, Point2) :-
     adjacent(Point1, AdjacentList),
     member(Point2, AdjacentList).
@@ -71,23 +71,21 @@ next_move(From, Target, Visited, Move) :-
 
 
 
-% update_knowledge(+Knowledge, +Visited, +Width, +Height, +Point, +Perceptions, -NewKnowledge).
-% function that updates the knowledge of the agent
-update_knowledge(Knowledge, _, _, _, _, _, Knowledge).
-
-
-
 % calculate_point_danger(+Point, -Danger)
 % function that calculates the danger of a point
 calculate_point_danger([Wumpus, Pit, Gold], Danger) :-
-    Danger is Wumpus + Pit - Gold.
+    (Gold < 0.5 -> GoldDanger is Gold * 0.5 ; GoldDanger is Gold * 2),
+    Danger is Wumpus + Pit - GoldDanger.
 /*
 Example:
 ?- calculate_point_danger([1, 1, 1], Danger).
-Danger = 1.
+Danger = -.
 
 ?- calculate_point_danger([0, 0, 1], Danger).
-Danger = -1.
+Danger = -2.
+
+?- calculate_point_danger([0, 1, 0], Danger).
+Danger = 1.
 */
 
 
