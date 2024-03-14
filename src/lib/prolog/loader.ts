@@ -6,9 +6,9 @@ export async function loadProlog() {
 		arguments: ['-q']
 	});
 
-	const prologArraysFile = await fetch('prolog/arrays.pl');
-	const prologAstarFile = await fetch('prolog/astar.pl');
-	const wumpusPrologFile = await fetch('prolog/wumpus.pl');
+	const prologArraysFile = await fetch('/prolog/arrays.pl');
+	const prologAstarFile = await fetch('/prolog/astar.pl');
+	const wumpusPrologFile = await fetch('/prolog/wumpus.pl');
 
 	const combinedPrologFile = [
 		await prologArraysFile.text(),

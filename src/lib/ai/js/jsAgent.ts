@@ -1,5 +1,5 @@
 import type { Game } from '$lib/game';
-import { getAdjacentV2Bound, isAdjacentV2, v2FromString, type V2 } from '$lib/v2';
+import { getAdjacentV2Bound, isAdjacentV2, v2FromString, type V2, equalsV2 } from '$lib/v2';
 import { AIAgent } from '../aiAgent';
 
 export class JSAgent extends AIAgent {
@@ -71,7 +71,7 @@ function aStar(from: V2, to: V2, visited: string[], width: number, height: numbe
 			}
 		}
 
-		if (current.x === to.x && current.y === to.y) return reconstructPath(cameFrom, current);
+		if (equalsV2(current, to)) return reconstructPath(cameFrom, current);
 
 		openSet.delete(current);
 

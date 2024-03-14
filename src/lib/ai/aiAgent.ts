@@ -3,6 +3,12 @@ import { createMatrix } from '$lib/utils';
 import { getAdjacentV2Bound, type V2 } from '$lib/v2';
 import { perceptionsToTileData, type AiTileData } from './ai';
 
+export function getAdjacentNotVisited(game: Game, visited: string[], v: V2): V2[] {
+	return getAdjacentV2Bound(v, game.width, game.height).filter(
+		(adj) => !visited.includes(`${adj.x},${adj.y}`)
+	);
+}
+
 export abstract class AIAgent {
 	private _game: Game;
 	private _visited: Set<string>;
@@ -40,12 +46,6 @@ export abstract class AIAgent {
 		this._knowledge = createMatrix(game.width, game.height, () => ({ wumpus: 0, pit: 0, gold: 0 }));
 		this.addVisited(game.playerPosition);
 	}
-}
-
-export function getAdjacentNotVisited(game: Game, visited: string[], v: V2): V2[] {
-	return getAdjacentV2Bound(v, game.width, game.height).filter(
-		(adj) => !visited.includes(`${adj.x},${adj.y}`)
-	);
 }
 
 function updateKnowledge(game: Game, visited: string[], knowledge: AiTileData[][], v: V2) {

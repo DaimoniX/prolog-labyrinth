@@ -1,6 +1,6 @@
 import type { Game } from '$lib/game';
 import type { Prolog } from '$lib/prolog/prolog';
-import { v2FromString, type V2, equalsV2 } from '$lib/v2';
+import { v2FromString, type V2, equalsV2, includesV2, sortV2 } from '$lib/v2';
 import { type AiTileData } from '../ai';
 import { AIAgent } from '../aiAgent';
 
@@ -21,7 +21,7 @@ export class PrologAgent extends AIAgent {
 			'next_target(Knowledge, Visited, Width, Height, Target).',
 			{
 				Knowledge: knowledgeToProlog(this.knowledge),
-				Visited: v2Sorted(this.visited.map(v2FromString)).map(v2ToProlog),
+				Visited: sortV2(this.visited.map(v2FromString)).map(v2ToProlog),
 				Width: this.game.width,
 				Height: this.game.height
 			}
@@ -33,9 +33,9 @@ export class PrologAgent extends AIAgent {
 	public override nextMove(): V2 {
 		if (
 			equalsV2(this.previousTarget, this.nextTarget()) &&
-			v2Includes(this.game.playerPosition, this.currentPath)
+			includesV2(this.game.playerPosition, this.currentPath)
 		)
-			return nextPoint(this.currentPath, this.game.playerPosition);
+			return nextPathPoint(this.currentPath, this.game.playerPosition);
 
 		const nextMove = this.prolog.queryOnce('next_move(From, Target, Visited, Path).', {
 			From: v2ToProlog(this.game.playerPosition),
@@ -44,6 +44,7 @@ export class PrologAgent extends AIAgent {
 		});
 
 		if (!nextMove.success) return this.game.playerPosition;
+
 		this.previousTarget = this.nextTarget();
 		this.currentPath = nextMove.Path.map(v2FromProlog);
 		return v2FromProlog(nextMove.Path[1] ?? nextMove.Path[0]);
@@ -66,15 +67,7 @@ function tileDataToProlog(tileData: AiTileData): [number, number, number] {
 	return [tileData.wumpus, tileData.pit, tileData.gold];
 }
 
-function v2Sorted(v2: V2[]): V2[] {
-	return v2.sort((a, b) => (a.y - b.y) * 100 + b.x - a.x);
-}
-
-function v2Includes(v2: V2, arr: V2[]): boolean {
-	return arr.some((v) => v.x === v2.x && v.y === v2.y);
-}
-
-function nextPoint(path: V2[], current: V2): V2 {
+function nextPathPoint(path: V2[], current: V2): V2 {
 	if (path.length === 0) return current;
 	const index = path.findIndex((v) => v.x === current.x && v.y === current.y);
 	if (index === -1) return current;

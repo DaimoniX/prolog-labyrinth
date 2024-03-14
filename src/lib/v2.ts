@@ -25,3 +25,11 @@ export function v2FromString(str: string): V2 {
 	const [x, y] = str.split(',').map(Number);
 	return { x, y };
 }
+
+export function sortV2(v2: V2[]): V2[] {
+	return v2.sort((a, b) => (a.y - b.y) * 100 + b.x - a.x);
+}
+
+export function includesV2(v2: V2, arr: V2[]): boolean {
+	return arr.some((v) => v.x === v2.x && v.y === v2.y);
+}

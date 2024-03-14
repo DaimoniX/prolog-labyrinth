@@ -3,9 +3,10 @@
 % Perceptions: AiTileData -> [Wumpus, Pit, Gold]
 
 
+
 % =================================================================================================
 %
-%   Main function
+%   Main functions
 %
 % =================================================================================================
 
@@ -33,6 +34,7 @@ AdjacentList = [[2, 1], [0, 1], [1, 2], [1, 0]].
 is_adjacent(Point1, Point2) :-
     adjacent(Point1, AdjacentList),
     member(Point2, AdjacentList).
+
 
 
 % bounded(+Point, +Width, +Height)
@@ -79,7 +81,7 @@ calculate_point_danger([Wumpus, Pit, Gold], Danger) :-
 /*
 Example:
 ?- calculate_point_danger([1, 1, 1], Danger).
-Danger = -.
+Danger = -1.
 
 ?- calculate_point_danger([0, 0, 1], Danger).
 Danger = -2.
@@ -94,6 +96,8 @@ Danger = 1.
 % function that returns all adjacent points to visited cells
 get_all_visited_adjacent(Visited, Width, Height, Result) :-
     get_all_visited_adjacent_helper(Visited, Visited, Width, Height, [], Result), !.
+
+
 
 % get_all_visited_adjacent_helper(+Visited, +Visited, +Width, +Height, +Accumulator, -Result)
 % helper function for get_all_visited_adjacent
@@ -116,14 +120,6 @@ minimal_danger(Knowledge, Visited, Width, Height, Point) :-
     nth0(Index, Dangers, MinDanger),
     nth0(Index, Adjacent, Point), !.
 
-
-
-% minimal_danger(Knowledge, Visited, Width, Height, Point) :-
-%     findall([X, Y], (member([X, Y], Visited), adjacent_bounded([X, Y], Width, Height, Adjacent), member(Point, Adjacent)), AdjacentPoints),
-%     findall(Danger, (member(Point, AdjacentPoints), get_2d_val(Knowledge, Point, PossiblePoint), calculate_point_danger(PossiblePoint, Danger)), Dangers),
-%     min_list(Dangers, MinDanger),
-%     nth0(Index, Dangers, MinDanger),
-%     nth0(Index, AdjacentPoints, Point), !.
 
 
 % next_target(+Knowledge, +Visited, +Width, +Height, -Target)
