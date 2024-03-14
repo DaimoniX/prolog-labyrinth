@@ -88,7 +88,7 @@
 		}
 	}
 
-	$: toggleAutoPlay(autoplay);
+	$: toggleAutoPlay((autoplay = autoplay && aiEnabled));
 
 	// Prolog
 	let prolog: Prolog;

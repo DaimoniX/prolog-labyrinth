@@ -21,7 +21,7 @@ export class JSAgent extends AIAgent {
 		let leastDanger = Infinity;
 
 		for (let y = 0; y < this.game.height; y++) {
-			for (let x = 0; x < this.game.width; x++) {
+			for (let x = this.game.width - 1; x >= 0; x--) {
 				if (this.visited.includes(`${x},${y}`)) continue;
 				if (!this.visited.some((v) => isAdjacentV2({ x, y }, v2FromString(v)))) continue;
 
